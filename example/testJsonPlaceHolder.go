@@ -7,19 +7,6 @@ import (
 	"github.com/haquenafeem/gopunch"
 )
 
-type TypeOFRequest int
-
-const (
-	GetSingle TypeOFRequest = iota
-	GetAll
-	Post
-	Delete
-)
-
-func main() {
-	TestJSONPlaceHolder(GetAll)
-}
-
 type Todo struct {
 	UserID    int    `json:"userId"`
 	ID        int    `json:"id"`
@@ -46,13 +33,8 @@ func TestJSONPlaceHolder(reqType TypeOFRequest) {
 }
 
 func getAll(client *gopunch.Client) {
-	query := gopunch.WithQueries(map[string]string{
-		"id":        "1",
-		"completed": "false",
-	})
-
 	var todos []Todo
-	err := client.GetUnmarshal(context.Background(), "/todos", &todos, query)
+	err := client.GetUnmarshal(context.Background(), "/todos", &todos)
 	if err != nil {
 		panic(err)
 	}
