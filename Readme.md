@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/haquenafeem/gopunch">
-    <img alt="gopunch" src="https://github.com/haquenafeem/gopunch/blob/main/assets/banner.png" width="500">
+    <img alt="gopunch" src="https://github.com/haquenafeem/gopunch/blob/main/assets/banner.png" width="250">
   </a>
 </p>
 
