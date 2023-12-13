@@ -36,14 +36,19 @@ var QueryTestCases = []struct {
 
 func Test_WithQueries(t *testing.T) {
 	for _, testCase := range QueryTestCases {
+		// Arrange
 		req, err := http.NewRequest("", "", nil)
 		if err != nil {
 			panic(err)
 		}
 
+		t.Log(testCase.Title)
+
+		// Act
 		withQueris := WithQueries(testCase.GivenQueries)
 		withQueris(req)
 
+		// Assert
 		for key, expected := range testCase.ExpectedQueries {
 			value := req.URL.Query().Get(key)
 			if value != expected {
@@ -85,14 +90,19 @@ var HeaderTestCases = []struct {
 
 func Test_WithHeaders(t *testing.T) {
 	for _, testCase := range HeaderTestCases {
+		// Arrange
 		req, err := http.NewRequest("", "", nil)
 		if err != nil {
 			panic(err)
 		}
 
+		t.Log(testCase.Title)
+
+		// Act
 		WithHeaders := WithHeaders(testCase.GivenHeaders)
 		WithHeaders(req)
 
+		// Assert
 		for key, expected := range testCase.ExpectedHeaders {
 			value := req.Header.Get(key)
 			if value != expected {
