@@ -1,5 +1,5 @@
 run:
-	go run cmd/*.go
+	go run example/*.go
 
 test:
 	go test -v ./
