@@ -39,7 +39,7 @@ func Test_WithQueries(t *testing.T) {
 		// Arrange
 		req, err := http.NewRequest("", "", nil)
 		if err != nil {
-			panic(err)
+			t.Fatal(err)
 		}
 
 		t.Log(testCase.Title)
@@ -93,7 +93,7 @@ func Test_WithHeaders(t *testing.T) {
 		// Arrange
 		req, err := http.NewRequest("", "", nil)
 		if err != nil {
-			panic(err)
+			t.Fatal(err)
 		}
 
 		t.Log(testCase.Title)
