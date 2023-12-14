@@ -56,10 +56,7 @@ func Test_Get(t *testing.T) {
 	for _, testCase := range GetTestCases {
 		t.Log(testCase.Title)
 
-		resp, err := client.Get(ctx, testCase.Path)
-		if err != nil {
-			t.Fatal(err)
-		}
+		resp := client.Get(ctx, testCase.Path)
 
 		var resStruct struct {
 			UserID    int    `json:"userId"`
@@ -68,7 +65,7 @@ func Test_Get(t *testing.T) {
 			Completed bool   `json:"completed"`
 		}
 
-		err = json.NewDecoder(resp.Body).Decode(&resStruct)
+		err := resp.JSONUnmarshal(&resStruct)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -89,7 +86,7 @@ func Test_Get(t *testing.T) {
 			t.Fail()
 		}
 
-		resp.Body.Close()
+		resp.Close()
 	}
 }
 
@@ -166,17 +163,18 @@ func Test_Post(t *testing.T) {
 	ctx := context.Background()
 	for _, testCase := range PostTestCases {
 		t.Log(testCase.Title)
-
-		resp, err := client.Post(ctx, testCase.Path, &testCase.Data)
+		payloadBytes, err := json.Marshal(&testCase.Data)
 		if err != nil {
 			t.Fatal(err)
 		}
+
+		resp := client.Post(ctx, testCase.Path, payloadBytes)
 
 		var resStruct struct {
 			ID int `json:"id"`
 		}
 
-		err = json.NewDecoder(resp.Body).Decode(&resStruct)
+		err = resp.JSONUnmarshal(&resStruct)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -185,7 +183,7 @@ func Test_Post(t *testing.T) {
 			t.Fail()
 		}
 
-		resp.Body.Close()
+		resp.Close()
 	}
 }
 
@@ -199,7 +197,12 @@ func Test_PostUnmarshal(t *testing.T) {
 			ID int `json:"id"`
 		}
 
-		err := client.PostUnmarshal(ctx, testCase.Path, &testCase.Data, &resStruct)
+		payloadBytes, err := json.Marshal(&testCase.Data)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		err = client.PostUnmarshal(ctx, testCase.Path, payloadBytes, &resStruct)
 		if err != nil {
 			t.Fatal(err)
 		}

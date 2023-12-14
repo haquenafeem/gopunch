@@ -39,101 +39,84 @@ func NewWithTimeOut(baseUrl string, timeout time.Duration) *Client {
 // Get
 // takes context, endpoint and option functions
 // returns *http.Response and error
-func (c *Client) Get(ctx context.Context, endPoint string, opts ...Option) (*http.Response, error) {
+func (c *Client) Get(ctx context.Context, endPoint string, opts ...Option) *Response {
 	completeUrl := c.baseUrl + endPoint
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, completeUrl, nil)
 	if err != nil {
-		return nil, err
+		return NewResponse(nil, err)
 	}
 
 	for _, opt := range opts {
 		opt(req)
 	}
 
-	return c.httpClient.Do(req)
+	return NewResponse(c.httpClient.Do(req))
 }
 
 // GetUnmarshal
 // takes context, endpoint, pointer to which the response will be unmarshalled and option functions
 // returns only error
 func (c *Client) GetUnmarshal(ctx context.Context, endPoint string, dest interface{}, opts ...Option) error {
-	resp, err := c.Get(ctx, endPoint, opts...)
-	if err != nil {
-		return err
-	}
+	resp := c.Get(ctx, endPoint, opts...)
+	defer resp.Close()
 
-	defer resp.Body.Close()
-
-	return json.NewDecoder(resp.Body).Decode(dest)
+	return resp.JSONUnmarshal(dest)
 }
 
 // Post
 // takes context, endpoint, payload pointer and option functions
 // returns *http.Response and error
-func (c *Client) Post(ctx context.Context, endPoint string, payload interface{}, opts ...Option) (*http.Response, error) {
-	data, err := json.Marshal(payload)
-	if err != nil {
-		return nil, err
-	}
-
+func (c *Client) Post(ctx context.Context, endPoint string, payload []byte, opts ...Option) *Response {
 	completeUrl := c.baseUrl + endPoint
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, completeUrl, bytes.NewBuffer(data))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, completeUrl, bytes.NewBuffer(payload))
 	if err != nil {
-		return nil, err
+		return NewResponse(nil, err)
 	}
 
 	for _, opt := range opts {
 		opt(req)
 	}
 
-	return c.httpClient.Do(req)
+	return NewResponse(c.httpClient.Do(req))
 }
 
 // PostUnmarshal
 // takes context, endpoint, payload pointer, pointer to which the response will be unmarshalled and option functions
 // returns only error
-func (c *Client) PostUnmarshal(ctx context.Context, endPoint string, payload interface{}, dest interface{}, opts ...Option) error {
-	resp, err := c.Post(ctx, endPoint, payload, opts...)
-	if err != nil {
-		return err
-	}
+func (c *Client) PostUnmarshal(ctx context.Context, endPoint string, payload []byte, dest interface{}, opts ...Option) error {
+	resp := c.Post(ctx, endPoint, payload, opts...)
+	defer resp.Close()
 
-	defer resp.Body.Close()
-
-	return json.NewDecoder(resp.Body).Decode(dest)
+	return resp.JSONUnmarshal(dest)
 }
 
 // Delete
 // takes context, endpoint and option functions
 // returns *http.Response and error
-func (c *Client) Delete(ctx context.Context, endPoint string, opts ...Option) (*http.Response, error) {
+func (c *Client) Delete(ctx context.Context, endPoint string, opts ...Option) *Response {
 	completeUrl := c.baseUrl + endPoint
 	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, completeUrl, nil)
 	if err != nil {
-		return nil, err
+		return NewResponse(nil, err)
 	}
 
 	for _, opt := range opts {
 		opt(req)
 	}
 
-	return c.httpClient.Do(req)
+	return NewResponse(c.httpClient.Do(req))
 }
 
 // DeleteUnmarshal
 // takes context, endpoint, pointer to which the response will be unmarshalled and option functions
 // returns only error
 func (c *Client) DeleteUnmarshal(ctx context.Context, endPoint string, dest interface{}, opts ...Option) error {
-	resp, err := c.Delete(ctx, endPoint, opts...)
-	if err != nil {
-		return err
-	}
+	resp := c.Delete(ctx, endPoint, opts...)
+	defer resp.Close()
 
-	defer resp.Body.Close()
-
-	return json.NewDecoder(resp.Body).Decode(dest)
+	return resp.JSONUnmarshal(dest)
 }
 
 // Put

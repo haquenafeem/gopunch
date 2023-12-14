@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/haquenafeem/gopunch"
@@ -59,8 +60,12 @@ func post(client *gopunch.Client) {
 		Completed: false,
 	}
 
+	payloadBytes, err := json.Marshal(req)
+	if err != nil {
+		panic(err)
+	}
 	var m map[string]interface{}
-	err := client.PostUnmarshal(context.Background(), "/todos", req, &m)
+	err = client.PostUnmarshal(context.Background(), "/todos", payloadBytes, &m)
 	if err != nil {
 		panic(err)
 	}
