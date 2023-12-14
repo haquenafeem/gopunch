@@ -212,3 +212,67 @@ func Test_PostUnmarshal(t *testing.T) {
 		}
 	}
 }
+
+var DeleteTestCases = []struct {
+	Title          string
+	Path           string
+	ExpectedString string
+}{
+	{
+		Title:          `Sending Delete Request to "https://jsonplaceholder.typicode.com/todos/1" would return empty json "{}"`,
+		Path:           "/todos/1",
+		ExpectedString: "{}",
+	},
+}
+
+func Test_Delete(t *testing.T) {
+	client := New(BaseURL)
+	ctx := context.Background()
+	for _, testCase := range DeleteTestCases {
+		t.Log(testCase.Title)
+
+		resp := client.Delete(ctx, testCase.Path)
+
+		str := ""
+		err := resp.StringUnmarshal(&str)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if str != testCase.ExpectedString {
+			t.Fail()
+		}
+
+		resp.Close()
+	}
+}
+
+var DeleteUnmarshalTestCases = []struct {
+	Title string
+	Path  string
+}{
+	{
+		Title: `Sending Delete Request to "https://jsonplaceholder.typicode.com/todos/1" and trying to unmarshal to a
+		map would return empty map without error`,
+		Path: "/todos/1",
+	},
+}
+
+func Test_DeleteUnmarshal(t *testing.T) {
+	client := New(BaseURL)
+	ctx := context.Background()
+	for _, testCase := range DeleteUnmarshalTestCases {
+		t.Log(testCase.Title)
+
+		var m map[string]interface{}
+		err := client.DeleteUnmarshal(ctx, testCase.Path, &m)
+
+		if len(m) != 0 {
+			t.Fail()
+		}
+
+		if err != nil {
+			t.Fail()
+		}
+	}
+}
