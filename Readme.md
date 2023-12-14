@@ -42,5 +42,5 @@ func main() {
 
 ```
 <p>
-  Complete Example<a href="https://github.com/haquenafeem/gopunch/tree/main/example">Here</a>
+  Complete Example <a href="https://github.com/haquenafeem/gopunch/tree/main/example">Here</a>
 </p>
