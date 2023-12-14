@@ -4,4 +4,7 @@ run:
 test:
 	go test -v ./
 
-.PHONY: run test
+test-cover:
+	go test -v ./ --cover
+
+.PHONY: run test test-cover

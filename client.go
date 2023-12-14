@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"time"
 )
 
 type Client struct {
@@ -16,6 +17,15 @@ func New(baseUrl string) *Client {
 	return &Client{
 		baseUrl:    baseUrl,
 		httpClient: &http.Client{},
+	}
+}
+
+func NewWithTimeOut(baseUrl string, timeout time.Duration) *Client {
+	return &Client{
+		baseUrl: baseUrl,
+		httpClient: &http.Client{
+			Timeout: timeout,
+		},
 	}
 }
 
