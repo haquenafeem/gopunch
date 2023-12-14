@@ -7,4 +7,5 @@ const (
 	GetAll
 	Post
 	Delete
+	Put
 )

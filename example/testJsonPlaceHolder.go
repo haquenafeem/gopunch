@@ -30,6 +30,9 @@ func TestJSONPlaceHolder(reqType TypeOFRequest) {
 	case Delete:
 		delete(client)
 		return
+	case Put:
+		put(client)
+		return
 	}
 }
 
@@ -76,6 +79,26 @@ func post(client *gopunch.Client) {
 func delete(client *gopunch.Client) {
 	var m map[string]interface{}
 	err := client.DeleteUnmarshal(context.Background(), "/todos/1", &m)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(m)
+}
+
+func put(client *gopunch.Client) {
+	req := &Todo{
+		UserID:    6,
+		Title:     "xxxx",
+		Completed: false,
+	}
+
+	payloadBytes, err := json.Marshal(req)
+	if err != nil {
+		panic(err)
+	}
+	var m map[string]interface{}
+	err = client.PutUnmarshal(context.Background(), "/todos/13", payloadBytes, &m)
 	if err != nil {
 		panic(err)
 	}
