@@ -68,6 +68,9 @@ func (c *Client) GetUnmarshal(ctx context.Context, endPoint string, dest interfa
 	return json.NewDecoder(resp.Body).Decode(dest)
 }
 
+// Post
+// takes context, endpoint, payload pointer and option functions
+// returns *http.Response and error
 func (c *Client) Post(ctx context.Context, endPoint string, payload interface{}, opts ...Option) (*http.Response, error) {
 	data, err := json.Marshal(payload)
 	if err != nil {
@@ -88,6 +91,9 @@ func (c *Client) Post(ctx context.Context, endPoint string, payload interface{},
 	return c.httpClient.Do(req)
 }
 
+// PostUnmarshal
+// takes context, endpoint, payload pointer, pointer to which the response will be unmarshalled and option functions
+// returns only error
 func (c *Client) PostUnmarshal(ctx context.Context, endPoint string, payload interface{}, dest interface{}, opts ...Option) error {
 	resp, err := c.Post(ctx, endPoint, payload, opts...)
 	if err != nil {
@@ -99,6 +105,9 @@ func (c *Client) PostUnmarshal(ctx context.Context, endPoint string, payload int
 	return json.NewDecoder(resp.Body).Decode(dest)
 }
 
+// Delete
+// takes context, endpoint and option functions
+// returns *http.Response and error
 func (c *Client) Delete(ctx context.Context, endPoint string, opts ...Option) (*http.Response, error) {
 	completeUrl := c.baseUrl + endPoint
 	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, completeUrl, nil)
@@ -113,6 +122,9 @@ func (c *Client) Delete(ctx context.Context, endPoint string, opts ...Option) (*
 	return c.httpClient.Do(req)
 }
 
+// DeleteUnmarshal
+// takes context, endpoint, pointer to which the response will be unmarshalled and option functions
+// returns only error
 func (c *Client) DeleteUnmarshal(ctx context.Context, endPoint string, dest interface{}, opts ...Option) error {
 	resp, err := c.Delete(ctx, endPoint, opts...)
 	if err != nil {
@@ -124,6 +136,9 @@ func (c *Client) DeleteUnmarshal(ctx context.Context, endPoint string, dest inte
 	return json.NewDecoder(resp.Body).Decode(dest)
 }
 
+// Put
+// takes context, endpoint, payload pointer and option functions
+// returns *http.Response and error
 func (c *Client) Put(ctx context.Context, endPoint string, payload interface{}, opts ...Option) (*http.Response, error) {
 	data, err := json.Marshal(payload)
 	if err != nil {
@@ -143,6 +158,9 @@ func (c *Client) Put(ctx context.Context, endPoint string, payload interface{}, 
 	return c.httpClient.Do(req)
 }
 
+// PutUnmarshal
+// takes context, endpoint, payload pointer, pointer to which the response will be unmarshalled and option functions
+// returns only error
 func (c *Client) PutUnmarshal(ctx context.Context, endPoint string, payload interface{}, dest interface{}, opts ...Option) error {
 	resp, err := c.Put(ctx, endPoint, payload, opts...)
 	if err != nil {
@@ -154,6 +172,9 @@ func (c *Client) PutUnmarshal(ctx context.Context, endPoint string, payload inte
 	return json.NewDecoder(resp.Body).Decode(dest)
 }
 
+// Patch
+// takes context, endpoint, payload pointer and option functions
+// returns *http.Response and error
 func (c *Client) Patch(ctx context.Context, endPoint string, payload interface{}, opts ...Option) (*http.Response, error) {
 	data, err := json.Marshal(payload)
 	if err != nil {
@@ -173,6 +194,9 @@ func (c *Client) Patch(ctx context.Context, endPoint string, payload interface{}
 	return c.httpClient.Do(req)
 }
 
+// PatchUnmarshal
+// takes context, endpoint, payload pointer, pointer to which the response will be unmarshalled and option functions
+// returns only error
 func (c *Client) PatchUnmarshal(ctx context.Context, endPoint string, payload interface{}, dest interface{}, opts ...Option) error {
 	resp, err := c.Patch(ctx, endPoint, payload, opts...)
 	if err != nil {
