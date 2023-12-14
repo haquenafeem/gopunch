@@ -8,11 +8,15 @@ import (
 	"time"
 )
 
+// Client
+// has baseURL and *http.Client
 type Client struct {
 	baseUrl    string
 	httpClient *http.Client
 }
 
+// New
+// returns a new *gopunch.Client
 func New(baseUrl string) *Client {
 	return &Client{
 		baseUrl:    baseUrl,
@@ -20,6 +24,9 @@ func New(baseUrl string) *Client {
 	}
 }
 
+// NewWithTimeOut
+// returns a new *gopunch.Client
+// adds time duration to http.Client for requests to complete
 func NewWithTimeOut(baseUrl string, timeout time.Duration) *Client {
 	return &Client{
 		baseUrl: baseUrl,
@@ -29,6 +36,9 @@ func NewWithTimeOut(baseUrl string, timeout time.Duration) *Client {
 	}
 }
 
+// Get
+// takes context, endpoint and option functions
+// returns *http.Response and error
 func (c *Client) Get(ctx context.Context, endPoint string, opts ...Option) (*http.Response, error) {
 	completeUrl := c.baseUrl + endPoint
 
@@ -44,6 +54,9 @@ func (c *Client) Get(ctx context.Context, endPoint string, opts ...Option) (*htt
 	return c.httpClient.Do(req)
 }
 
+// GetUnmarshal
+// takes context, endpoint, pointer to which the response will be unmarshalled and option functions
+// returns only error
 func (c *Client) GetUnmarshal(ctx context.Context, endPoint string, dest interface{}, opts ...Option) error {
 	resp, err := c.Get(ctx, endPoint, opts...)
 	if err != nil {
