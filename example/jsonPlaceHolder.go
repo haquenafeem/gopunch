@@ -35,6 +35,9 @@ func RunJSONPlaceHolder(reqType TypeOFRequest) {
 	case GetAll:
 		getAll(ctx, client)
 		return
+	case GetAllWithQueries:
+		getAllWithQueries(ctx, client)
+		return
 	case GetSingle:
 		getSingle(ctx, client)
 		return
@@ -59,6 +62,25 @@ func getAll(ctx context.Context, client *gopunch.Client) {
 	})
 
 	err := client.GetUnmarshal(ctx, "/todos", &todos, opt)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(todos)
+}
+
+func getAllWithQueries(ctx context.Context, client *gopunch.Client) {
+	var todos []Todo
+	opt1 := gopunch.WithHeaders(map[string]string{
+		"Content-Type": "application/json",
+	})
+
+	opt2 := gopunch.WithQueries(map[string]string{
+		"userId":    "1",
+		"completed": "false",
+	})
+
+	err := client.GetUnmarshal(ctx, "/todos", &todos, opt1, opt2)
 	if err != nil {
 		panic(err)
 	}
