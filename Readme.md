@@ -31,8 +31,14 @@ type Todo struct {
 
 func main() {
 	client := gopunch.New("https://jsonplaceholder.typicode.com")
+	ctx := context.Background()
+	
 	var todos []Todo
-	err := client.GetUnmarshal(context.Background(), "/todos", &todos)
+	opt := gopunch.WithHeaders(map[string]string{
+		"Content-Type": "application/json",
+	})
+
+	err := client.GetUnmarshal(ctx, "/todos", &todos, opt)
 	if err != nil {
 		panic(err)
 	}
