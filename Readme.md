@@ -4,10 +4,6 @@
   </a>
 </p>
 
-<p align="center">
-  A simple http client for <a href="https://golang.org/">Golang</a>
-</p>
-
 # GoPunch
 `gopunch` is a simple golang package to make http calls.
 
@@ -32,7 +28,7 @@ type Todo struct {
 func main() {
 	client := gopunch.New("https://jsonplaceholder.typicode.com")
 	ctx := context.Background()
-	
+
 	var todos []Todo
 	opt := gopunch.WithHeaders(map[string]string{
 		"Content-Type": "application/json",
