@@ -26,6 +26,14 @@ func NewResponse(httpResponse *http.Response, err error) *Response {
 // Close
 // closes *httpResponse body
 func (r *Response) Close() error {
+	if r.err != nil {
+		return r.err
+	}
+
+	if r.httpResponse.Body == nil {
+		return errors.New("response body is nil")
+	}
+
 	return r.httpResponse.Body.Close()
 }
 

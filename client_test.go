@@ -4,9 +4,29 @@ import (
 	"context"
 	"encoding/json"
 	"testing"
+	"time"
 )
 
 const BaseURL = "https://jsonplaceholder.typicode.com"
+
+func Test_NewWithTimeOut(t *testing.T) {
+	client := NewWithTimeOut(BaseURL, time.Millisecond)
+	ctx := context.Background()
+	t.Log(`Creating client with "NewWithTimeOut" and providing very little timeout; the request should fail and return
+context deadline exceeded releted error`)
+
+	expectedErrString := `Get "https://jsonplaceholder.typicode.com/todos/1": context deadline exceeded (Client.Timeout exceeded while awaiting headers)`
+
+	var m map[string]interface{}
+	err := client.GetUnmarshal(ctx, "/todos/1", &m)
+	if err == nil {
+		t.Fail()
+	}
+
+	if err.Error() != expectedErrString {
+		t.Fail()
+	}
+}
 
 var GetTestCases = []struct {
 	Title          string
