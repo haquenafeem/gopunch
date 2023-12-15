@@ -7,6 +7,9 @@ import (
 	"net/http"
 )
 
+var ErrHttpResponseNil = errors.New("httpResponse is nil")
+var ErrHttpResponseBodyNil = errors.New("httpResponse body is nil")
+
 // Response
 // includes *http.Response and error
 type Response struct {
@@ -30,8 +33,12 @@ func (r *Response) Close() error {
 		return r.err
 	}
 
+	if r.httpResponse == nil {
+		return ErrHttpResponseNil
+	}
+
 	if r.httpResponse.Body == nil {
-		return errors.New("response body is nil")
+		return ErrHttpResponseBodyNil
 	}
 
 	return r.httpResponse.Body.Close()
@@ -44,6 +51,14 @@ func (r *Response) Close() error {
 func (r *Response) WithUnmarshal(fn func(reader io.Reader) error) error {
 	if r.err != nil {
 		return r.err
+	}
+
+	if r.httpResponse == nil {
+		return ErrHttpResponseNil
+	}
+
+	if r.httpResponse.Body == nil {
+		return ErrHttpResponseBodyNil
 	}
 
 	return fn(r.httpResponse.Body)

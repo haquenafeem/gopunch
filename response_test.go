@@ -3,9 +3,77 @@ package gopunch
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
+	"net/http"
 	"testing"
 )
+
+var NewResponseTestCases = []struct {
+	Title                    string
+	HttpResponse             *http.Response
+	Err                      error
+	ExpectedJSONUnmarshalErr error
+	ExpectedResponseCloseErr error
+}{
+	{
+		Title: `Given HttpResponse and Err are nil; trying to create response With "NewResponse"
+and trying to json unmarshal and close should provide errors that match expected errors`,
+		HttpResponse:             nil,
+		Err:                      nil,
+		ExpectedJSONUnmarshalErr: ErrHttpResponseNil,
+		ExpectedResponseCloseErr: ErrHttpResponseNil,
+	},
+	{
+		Title: `Given HttpResponse is Nil and Err given; trying to create response With "NewResponse"
+and trying to json unmarshal and close should provide errors that match expected errors`,
+		HttpResponse:             nil,
+		Err:                      ErrHttpResponseBodyNil,
+		ExpectedJSONUnmarshalErr: ErrHttpResponseBodyNil,
+		ExpectedResponseCloseErr: ErrHttpResponseBodyNil,
+	},
+	{
+		Title: `Given HttpResponse is given and Err is Nil; trying to create response With "NewResponse"
+and trying to json unmarshal and close should provide errors that match expected errors`,
+		HttpResponse:             &http.Response{},
+		Err:                      nil,
+		ExpectedJSONUnmarshalErr: ErrHttpResponseBodyNil,
+		ExpectedResponseCloseErr: ErrHttpResponseBodyNil,
+	},
+	{
+		Title: `Given HttpResponse and Err is given; trying to create response With "NewResponse"
+and trying to json unmarshal and close should provide errors that match expected errors`,
+		HttpResponse:             &http.Response{},
+		Err:                      ErrHttpResponseNil,
+		ExpectedJSONUnmarshalErr: ErrHttpResponseNil,
+		ExpectedResponseCloseErr: ErrHttpResponseNil,
+	},
+}
+
+func Test_NewResponse(t *testing.T) {
+	for _, testCase := range NewResponseTestCases {
+		t.Log(testCase.Title)
+		response := NewResponse(testCase.HttpResponse, testCase.Err)
+		var m interface{}
+		err := response.JSONUnmarshal(&m)
+		if err == nil {
+			t.Fail()
+		}
+		// fmt.Println(err)
+		if !errors.Is(err, testCase.ExpectedJSONUnmarshalErr) {
+			t.Fail()
+		}
+
+		err = response.Close()
+		if err == nil {
+			t.Fail()
+		}
+
+		if !errors.Is(err, testCase.ExpectedJSONUnmarshalErr) {
+			t.Fail()
+		}
+	}
+}
 
 var WithUnmarshalTestCases = []struct {
 	Title          string
