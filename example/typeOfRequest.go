@@ -8,4 +8,5 @@ const (
 	Post
 	Delete
 	Put
+	Patch
 )
