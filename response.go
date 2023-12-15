@@ -7,11 +7,15 @@ import (
 	"net/http"
 )
 
+// Response
+// includes *http.Response and error
 type Response struct {
 	httpResponse *http.Response
 	err          error
 }
 
+// NewResponse
+// takes *http.Response,err returns *Response
 func NewResponse(httpResponse *http.Response, err error) *Response {
 	return &Response{
 		httpResponse: httpResponse,
@@ -19,10 +23,16 @@ func NewResponse(httpResponse *http.Response, err error) *Response {
 	}
 }
 
+// Close
+// closes *httpResponse body
 func (r *Response) Close() error {
 	return r.httpResponse.Body.Close()
 }
 
+// WithUnmarshal
+// takes funcfunc(reader io.Reader) error
+// returns error
+// use to create custom unmarshal
 func (r *Response) WithUnmarshal(fn func(reader io.Reader) error) error {
 	if r.err != nil {
 		return r.err
@@ -31,6 +41,9 @@ func (r *Response) WithUnmarshal(fn func(reader io.Reader) error) error {
 	return fn(r.httpResponse.Body)
 }
 
+// JSONUnmarshal
+// takes pointer to destination
+// returns error
 func (r *Response) JSONUnmarshal(dest interface{}) error {
 	if r.err != nil {
 		return r.err
@@ -43,6 +56,9 @@ func (r *Response) JSONUnmarshal(dest interface{}) error {
 	return r.WithUnmarshal(fn)
 }
 
+// StringUnmarshal
+// takes pointer to destination string
+// returns error
 func (r *Response) StringUnmarshal(dest *string) error {
 	if r.err != nil {
 		return r.err
