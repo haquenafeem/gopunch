@@ -390,3 +390,130 @@ func Test_PutUnmarshal(t *testing.T) {
 		}
 	}
 }
+
+var PatchTestCases = []struct {
+	Title string
+	Path  string
+	Data  struct {
+		Title string `json:"title"`
+	}
+	ExpectedValues struct {
+		UserID    int    `json:"userId"`
+		ID        int    `json:"id"`
+		Title     string `json:"title"`
+		Completed bool   `json:"completed"`
+	}
+}{
+	{
+		Title: `Sending Patch Request for title to "https://jsonplaceholder.typicode.com/todos/1" should return and match expected values`,
+		Path:  "/todos/1",
+		Data: struct {
+			Title string `json:"title"`
+		}{
+			Title: "title updated",
+		},
+		ExpectedValues: struct {
+			UserID    int    `json:"userId"`
+			ID        int    `json:"id"`
+			Title     string `json:"title"`
+			Completed bool   `json:"completed"`
+		}{
+			UserID:    1,
+			ID:        1,
+			Title:     "title updated",
+			Completed: false,
+		},
+	},
+}
+
+func Test_Patch(t *testing.T) {
+	client := New(BaseURL)
+	ctx := context.Background()
+	for _, testCase := range PatchTestCases {
+		t.Log(testCase.Title)
+		opt := WithHeaders(map[string]string{
+			"Content-Type": "application/json",
+		})
+
+		payloadBytes, err := json.Marshal(&testCase.Data)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		resp := client.Patch(ctx, testCase.Path, payloadBytes, opt)
+
+		var resStruct struct {
+			UserID    int    `json:"userId"`
+			ID        int    `json:"id"`
+			Title     string `json:"title"`
+			Completed bool   `json:"completed"`
+		}
+
+		err = resp.JSONUnmarshal(&resStruct)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if resStruct.ID != testCase.ExpectedValues.ID {
+			t.Fail()
+		}
+
+		if resStruct.UserID != testCase.ExpectedValues.UserID {
+			t.Fail()
+		}
+
+		if resStruct.Title != testCase.ExpectedValues.Title {
+			t.Fail()
+		}
+
+		if resStruct.Completed != testCase.ExpectedValues.Completed {
+			t.Fail()
+		}
+
+		resp.Close()
+	}
+}
+
+func Test_PatchUnmarshal(t *testing.T) {
+	client := New(BaseURL)
+	ctx := context.Background()
+	for _, testCase := range PatchTestCases {
+		t.Log(testCase.Title)
+		opt := WithHeaders(map[string]string{
+			"Content-Type": "application/json",
+		})
+
+		var resStruct struct {
+			UserID    int    `json:"userId"`
+			ID        int    `json:"id"`
+			Title     string `json:"title"`
+			Completed bool   `json:"completed"`
+		}
+
+		payloadBytes, err := json.Marshal(&testCase.Data)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		err = client.PatchUnmarshal(ctx, testCase.Path, payloadBytes, &resStruct, opt)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if resStruct.ID != testCase.ExpectedValues.ID {
+			t.Fail()
+		}
+
+		if resStruct.UserID != testCase.ExpectedValues.UserID {
+			t.Fail()
+		}
+
+		if resStruct.Title != testCase.ExpectedValues.Title {
+			t.Fail()
+		}
+
+		if resStruct.Completed != testCase.ExpectedValues.Completed {
+			t.Fail()
+		}
+	}
+}
