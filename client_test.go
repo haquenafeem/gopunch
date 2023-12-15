@@ -55,8 +55,11 @@ func Test_Get(t *testing.T) {
 	ctx := context.Background()
 	for _, testCase := range GetTestCases {
 		t.Log(testCase.Title)
+		opt := WithHeaders(map[string]string{
+			"Content-Type": "application/json",
+		})
 
-		resp := client.Get(ctx, testCase.Path)
+		resp := client.Get(ctx, testCase.Path, opt)
 
 		var resStruct struct {
 			UserID    int    `json:"userId"`
@@ -96,6 +99,10 @@ func Test_GetUnmarshal(t *testing.T) {
 	for _, testCase := range GetTestCases {
 		t.Log(testCase.Title)
 
+		opt := WithHeaders(map[string]string{
+			"Content-Type": "application/json",
+		})
+
 		var resStruct struct {
 			UserID    int    `json:"userId"`
 			ID        int    `json:"id"`
@@ -103,7 +110,7 @@ func Test_GetUnmarshal(t *testing.T) {
 			Completed bool   `json:"completed"`
 		}
 
-		err := client.GetUnmarshal(ctx, testCase.Path, &resStruct)
+		err := client.GetUnmarshal(ctx, testCase.Path, &resStruct, opt)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -163,12 +170,16 @@ func Test_Post(t *testing.T) {
 	ctx := context.Background()
 	for _, testCase := range PostTestCases {
 		t.Log(testCase.Title)
+		opt := WithHeaders(map[string]string{
+			"Content-Type": "application/json",
+		})
+
 		payloadBytes, err := json.Marshal(&testCase.Data)
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		resp := client.Post(ctx, testCase.Path, payloadBytes)
+		resp := client.Post(ctx, testCase.Path, payloadBytes, opt)
 
 		var resStruct struct {
 			ID int `json:"id"`
@@ -192,6 +203,9 @@ func Test_PostUnmarshal(t *testing.T) {
 	ctx := context.Background()
 	for _, testCase := range PostTestCases {
 		t.Log(testCase.Title)
+		opt := WithHeaders(map[string]string{
+			"Content-Type": "application/json",
+		})
 
 		var resStruct struct {
 			ID int `json:"id"`
@@ -202,7 +216,7 @@ func Test_PostUnmarshal(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		err = client.PostUnmarshal(ctx, testCase.Path, payloadBytes, &resStruct)
+		err = client.PostUnmarshal(ctx, testCase.Path, payloadBytes, &resStruct, opt)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -230,8 +244,11 @@ func Test_Delete(t *testing.T) {
 	ctx := context.Background()
 	for _, testCase := range DeleteTestCases {
 		t.Log(testCase.Title)
+		opt := WithHeaders(map[string]string{
+			"Content-Type": "application/json",
+		})
 
-		resp := client.Delete(ctx, testCase.Path)
+		resp := client.Delete(ctx, testCase.Path, opt)
 
 		str := ""
 		err := resp.StringUnmarshal(&str)
@@ -263,9 +280,12 @@ func Test_DeleteUnmarshal(t *testing.T) {
 	ctx := context.Background()
 	for _, testCase := range DeleteUnmarshalTestCases {
 		t.Log(testCase.Title)
+		opt := WithHeaders(map[string]string{
+			"Content-Type": "application/json",
+		})
 
 		var m map[string]interface{}
-		err := client.DeleteUnmarshal(ctx, testCase.Path, &m)
+		err := client.DeleteUnmarshal(ctx, testCase.Path, &m, opt)
 
 		if len(m) != 0 {
 			t.Fail()
@@ -314,12 +334,16 @@ func Test_Put(t *testing.T) {
 	ctx := context.Background()
 	for _, testCase := range PutTestCases {
 		t.Log(testCase.Title)
+		opt := WithHeaders(map[string]string{
+			"Content-Type": "application/json",
+		})
+
 		payloadBytes, err := json.Marshal(&testCase.Data)
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		resp := client.Put(ctx, testCase.Path, payloadBytes)
+		resp := client.Put(ctx, testCase.Path, payloadBytes, opt)
 
 		var resStruct struct {
 			ID int `json:"id"`
@@ -343,6 +367,9 @@ func Test_PutUnmarshal(t *testing.T) {
 	ctx := context.Background()
 	for _, testCase := range PutTestCases {
 		t.Log(testCase.Title)
+		opt := WithHeaders(map[string]string{
+			"Content-Type": "application/json",
+		})
 
 		var resStruct struct {
 			ID int `json:"id"`
@@ -353,7 +380,7 @@ func Test_PutUnmarshal(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		err = client.PutUnmarshal(ctx, testCase.Path, payloadBytes, &resStruct)
+		err = client.PutUnmarshal(ctx, testCase.Path, payloadBytes, &resStruct, opt)
 		if err != nil {
 			t.Fatal(err)
 		}
