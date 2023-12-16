@@ -83,30 +83,3 @@ func (r *Response) JSONUnmarshal(dest interface{}) error {
 
 	return r.WithUnmarshal(fn)
 }
-
-// StringUnmarshal
-//
-//	takes pointer to destination string
-//	returns error
-func (r *Response) StringUnmarshal(dest *string) error {
-	if r.err != nil {
-		return r.err
-	}
-
-	fn := func(reader io.Reader) error {
-		bytes, err := io.ReadAll(reader)
-		if err != nil {
-			return err
-		}
-
-		if dest == nil {
-			return errors.New("nil pointer")
-		}
-
-		*dest = string(bytes)
-
-		return nil
-	}
-
-	return r.WithUnmarshal(fn)
-}

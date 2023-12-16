@@ -7,6 +7,8 @@
 # GoPunch
 `gopunch` is a simple golang package to make http calls.
 
+![tests](https://github.com/haquenafeem/gopunch/actions/workflows/go.yml/badge.svg)
+
 ## Usage
 ```go
 package main

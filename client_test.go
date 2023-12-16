@@ -276,14 +276,13 @@ func Test_PostUnmarshal(t *testing.T) {
 }
 
 var DeleteTestCases = []struct {
-	Title          string
-	Path           string
-	ExpectedString string
+	Title string
+	Path  string
 }{
 	{
-		Title:          `Sending Delete Request to "https://jsonplaceholder.typicode.com/todos/1" would return empty json "{}"`,
-		Path:           "/todos/1",
-		ExpectedString: "{}",
+		Title: `Sending Delete Request to "https://jsonplaceholder.typicode.com/todos/1" would return empty response; 
+but without error and with status code ok`,
+		Path: "/todos/1",
 	},
 }
 
@@ -298,13 +297,11 @@ func Test_Delete(t *testing.T) {
 
 		resp := client.Delete(ctx, testCase.Path, opt)
 
-		str := ""
-		err := resp.StringUnmarshal(&str)
-		if err != nil {
-			t.Fatal(err)
+		if resp.err != nil {
+			t.Fatal(resp.err)
 		}
 
-		if str != testCase.ExpectedString {
+		if resp.httpResponse.StatusCode != http.StatusOK {
 			t.Fail()
 		}
 
