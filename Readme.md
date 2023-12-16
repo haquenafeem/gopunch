@@ -5,9 +5,21 @@
 </p>
 
 # GoPunch
-`gopunch` is a simple golang package to make http calls.
+`gopunch` is a simple golang package to make http calls. 
 
-![tests](https://github.com/haquenafeem/gopunch/actions/workflows/go.yml/badge.svg)
+![workflow](https://github.com/haquenafeem/gopunch/actions/workflows/go.yml/badge.svg)
+
+# Features
+- Easy To Use
+- Use Own Unmarshal Logic
+- Create With/Without Timer
+- Easy To Use
+- Default JSON Oriented
+- Request/Respose Modification 
+- Examples To Get Your Started
+- All Tests/Examples Based On `JSON Place Holder`
+- Tests Passing
+
 
 ## Usage
 ```go
