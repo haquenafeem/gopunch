@@ -164,6 +164,20 @@ func Test_WithUnmarshal(t *testing.T) {
 	}
 }
 
+func Test_WithUnmarshal_WithResponseError(t *testing.T) {
+	t.Log(`Given Response created with nil http.Response, and error of ErrHttpResponseNil;
+calling WithUnmarshal would provide ErrHttpResponseNil error`)
+	resp := NewResponse(nil, ErrHttpResponseNil)
+	err := resp.WithUnmarshal(nil)
+	if err == nil {
+		t.Fail()
+	}
+
+	if !errors.Is(err, ErrHttpResponseNil) {
+		t.Fail()
+	}
+}
+
 var JSONUnmarshalTestCases = []struct {
 	Title          string
 	Path           string
@@ -306,5 +320,47 @@ func Test_StringUnmarshal(t *testing.T) {
 		}
 
 		resp.Close()
+	}
+}
+
+func Test_StringUnmarshal_WithResponseError(t *testing.T) {
+	t.Log(`Given Response created with nil http.Response, and error of ErrHttpResponseNil;
+calling StringUnmarshal would provide ErrHttpResponseNil error`)
+	resp := NewResponse(nil, ErrHttpResponseNil)
+	err := resp.StringUnmarshal(nil)
+	if err == nil {
+		t.Fail()
+	}
+
+	if !errors.Is(err, ErrHttpResponseNil) {
+		t.Fail()
+	}
+}
+
+func Test_StringUnmarshal_WithNilHttpResponseBody(t *testing.T) {
+	t.Log(`Given Response created with nil http.Response, and error of ErrHttpResponseNil;
+calling StringUnmarshal would provide ErrHttpResponseNil error`)
+	resp := NewResponse(&http.Response{}, nil)
+	err := resp.StringUnmarshal(nil)
+	if err == nil {
+		t.Fail()
+	}
+
+	if !errors.Is(err, ErrHttpResponseBodyNil) {
+		t.Fail()
+	}
+}
+
+func Test_StringUnmarshal_WithNilDestString(t *testing.T) {
+	t.Log(`Given Response created with nil http.Response, and error of ErrHttpResponseNil;
+calling StringUnmarshal would provide ErrHttpResponseNil error`)
+	resp := NewResponse(&http.Response{}, nil)
+	err := resp.StringUnmarshal(nil)
+	if err == nil {
+		t.Fail()
+	}
+
+	if !errors.Is(err, ErrHttpResponseBodyNil) {
+		t.Fail()
 	}
 }

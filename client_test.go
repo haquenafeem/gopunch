@@ -3,6 +3,8 @@ package gopunch
 import (
 	"context"
 	"encoding/json"
+	"net/http"
+	"strings"
 	"testing"
 	"time"
 )
@@ -113,6 +115,19 @@ func Test_Get(t *testing.T) {
 	}
 }
 
+func Test_Get_Without_Context(t *testing.T) {
+	client := New(BaseURL)
+	t.Log("Given context provided as nil; request would fail with error")
+	response := client.Get(nil, "/todos/1")
+	if response.err == nil {
+		t.Fail()
+	}
+
+	if !strings.Contains(response.err.Error(), "nil Context") {
+		t.Fail()
+	}
+}
+
 func Test_GetUnmarshal(t *testing.T) {
 	client := New(BaseURL)
 	ctx := context.Background()
@@ -218,6 +233,19 @@ func Test_Post(t *testing.T) {
 	}
 }
 
+func Test_Post_Without_Context(t *testing.T) {
+	client := New(BaseURL)
+	t.Log("Given context provided as nil; request would fail with error")
+	response := client.Post(nil, "/todos/1", nil)
+	if response.err == nil {
+		t.Fail()
+	}
+
+	if !strings.Contains(response.err.Error(), "nil Context") {
+		t.Fail()
+	}
+}
+
 func Test_PostUnmarshal(t *testing.T) {
 	client := New(BaseURL)
 	ctx := context.Background()
@@ -281,6 +309,19 @@ func Test_Delete(t *testing.T) {
 		}
 
 		resp.Close()
+	}
+}
+
+func Test_Delete_Without_Context(t *testing.T) {
+	client := New(BaseURL)
+	t.Log("Given context provided as nil; request would fail with error")
+	response := client.Delete(nil, "/todos/1")
+	if response.err == nil {
+		t.Fail()
+	}
+
+	if !strings.Contains(response.err.Error(), "nil Context") {
+		t.Fail()
 	}
 }
 
@@ -379,6 +420,19 @@ func Test_Put(t *testing.T) {
 		}
 
 		resp.Close()
+	}
+}
+
+func Test_Put_Without_Context(t *testing.T) {
+	client := New(BaseURL)
+	t.Log("Given context provided as nil; request would fail with error")
+	response := client.Put(nil, "/todos/1", nil)
+	if response.err == nil {
+		t.Fail()
+	}
+
+	if !strings.Contains(response.err.Error(), "nil Context") {
+		t.Fail()
 	}
 }
 
@@ -494,6 +548,19 @@ func Test_Patch(t *testing.T) {
 	}
 }
 
+func Test_Patch_Without_Context(t *testing.T) {
+	client := New(BaseURL)
+	t.Log("Given context provided as nil; request would fail with error")
+	response := client.Patch(nil, "/todos/1", nil)
+	if response.err == nil {
+		t.Fail()
+	}
+
+	if !strings.Contains(response.err.Error(), "nil Context") {
+		t.Fail()
+	}
+}
+
 func Test_PatchUnmarshal(t *testing.T) {
 	client := New(BaseURL)
 	ctx := context.Background()
@@ -534,6 +601,173 @@ func Test_PatchUnmarshal(t *testing.T) {
 
 		if resStruct.Completed != testCase.ExpectedValues.Completed {
 			t.Fail()
+		}
+	}
+}
+
+var CustomTestCases = []struct {
+	Title  string
+	Values struct {
+		Path    string
+		Context context.Context
+		Method  string
+		Payload map[string]interface{}
+	}
+	ExpectedErrContains string
+	CheckErr            bool
+	CheckValues         bool
+	ExpectedValues      map[string]interface{}
+}{
+	{
+		Title: `Sending Get Request to "https://jsonplaceholder.typicode.com/todos/1" providing context should not return err; and 
+expected values should match`,
+		Values: struct {
+			Path    string
+			Context context.Context
+			Method  string
+			Payload map[string]interface{}
+		}{
+			Path:    "/todos/1",
+			Context: context.Background(),
+			Method:  http.MethodGet,
+			Payload: map[string]interface{}{},
+		},
+		ExpectedErrContains: "",
+		CheckErr:            false,
+		ExpectedValues: map[string]interface{}{
+			"userId":    float64(1),
+			"id":        float64(1),
+			"title":     `delectus aut autem`,
+			"completed": false,
+		},
+		CheckValues: true,
+	},
+	{
+		Title: `Sending Get Request to "https://jsonplaceholder.typicode.com/todos/1" providing nil context should return err`,
+		Values: struct {
+			Path    string
+			Context context.Context
+			Method  string
+			Payload map[string]interface{}
+		}{
+			Path:    "/todos/1",
+			Context: nil,
+			Method:  http.MethodGet,
+			Payload: map[string]interface{}{},
+		},
+		ExpectedErrContains: "nil Context",
+		CheckErr:            true,
+		ExpectedValues:      map[string]interface{}{},
+		CheckValues:         false,
+	},
+}
+
+func Test_Custom(t *testing.T) {
+	client := New(BaseURL)
+	for _, testCase := range CustomTestCases {
+		t.Log(testCase.Title)
+		opt := WithHeaders(map[string]string{
+			"Content-Type": "application/json",
+		})
+
+		payloadBytes, err := json.Marshal(&testCase.Values.Payload)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		resp := client.Custom(
+			testCase.Values.Context,
+			testCase.Values.Method,
+			testCase.Values.Path,
+			payloadBytes,
+			opt)
+
+		if testCase.CheckErr {
+			if resp.err == nil {
+				t.Fail()
+			}
+
+			if !strings.Contains(resp.err.Error(), testCase.ExpectedErrContains) {
+				t.Fail()
+			}
+		}
+
+		if testCase.CheckValues {
+			var m map[string]interface{}
+			err := resp.JSONUnmarshal(&m)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if len(m) != len(testCase.ExpectedValues) {
+				t.Fail()
+			}
+
+			for key, value := range m {
+				if testCase.ExpectedValues[key] != value {
+					t.Fail()
+				}
+			}
+		}
+	}
+}
+
+func Test_Custom_Without_Context(t *testing.T) {
+	client := New(BaseURL)
+	t.Log("Given context provided as nil; request would fail with error")
+	response := client.Custom(nil, http.MethodGet, "/todos/1", nil)
+	if response.err == nil {
+		t.Fail()
+	}
+
+	if !strings.Contains(response.err.Error(), "nil Context") {
+		t.Fail()
+	}
+}
+
+func Test_CustomUnmarshal(t *testing.T) {
+	client := New(BaseURL)
+	for _, testCase := range CustomTestCases {
+		t.Log(testCase.Title)
+		opt := WithHeaders(map[string]string{
+			"Content-Type": "application/json",
+		})
+
+		payloadBytes, err := json.Marshal(&testCase.Values.Payload)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		var m map[string]interface{}
+
+		err = client.CustomUnmarshal(
+			testCase.Values.Context,
+			testCase.Values.Method,
+			testCase.Values.Path,
+			payloadBytes,
+			&m,
+			opt)
+
+		if testCase.CheckErr {
+			if err == nil {
+				t.Fail()
+			}
+
+			if !strings.Contains(err.Error(), testCase.ExpectedErrContains) {
+				t.Fail()
+			}
+		}
+
+		if testCase.CheckValues {
+			if len(m) != len(testCase.ExpectedValues) {
+				t.Fail()
+			}
+
+			for key, value := range m {
+				if testCase.ExpectedValues[key] != value {
+					t.Fail()
+				}
+			}
 		}
 	}
 }
