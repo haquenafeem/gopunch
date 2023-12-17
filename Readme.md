@@ -4,10 +4,10 @@
   </a>
 </p>
 
-# GoPunch
+# GoPunch ![workflow](https://github.com/haquenafeem/gopunch/actions/workflows/go.yml/badge.svg) [![Go Reference](https://pkg.go.dev/badge/github.com/haquenafeem/gopunch.svg)](https://pkg.go.dev/github.com/haquenafeem/gopunch) [![Go Report Card](https://goreportcard.com/badge/github.com/haquenafeem/gopunch)](https://goreportcard.com/report/github.com/haquenafeem/gopunch)
+
 `gopunch` is a simple golang package to make http calls. 
 
-![workflow](https://github.com/haquenafeem/gopunch/actions/workflows/go.yml/badge.svg) [![Go Reference](https://pkg.go.dev/badge/github.com/haquenafeem/gopunch.svg)](https://pkg.go.dev/github.com/haquenafeem/gopunch) [![Go Report Card](https://goreportcard.com/badge/github.com/haquenafeem/gopunch)](https://goreportcard.com/report/github.com/haquenafeem/gopunch)
 
 # Features
 - Easy To Use
