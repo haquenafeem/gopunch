@@ -262,3 +262,23 @@ func Test_JSONUnmarshal(t *testing.T) {
 		resp.Close()
 	}
 }
+
+func Test_Err(t *testing.T) {
+	t.Log(`Given err is provided as nil; getting error would return nil`)
+	resp := NewResponse(nil, nil)
+
+	err := resp.Err()
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func Test_HttpResponse(t *testing.T) {
+	t.Log(`Given http response is provided; getting http response would return the response`)
+	resp := NewResponse(&http.Response{}, nil)
+
+	httpResponse := resp.HttpResponse()
+	if httpResponse == nil {
+		t.Fail()
+	}
+}

@@ -30,6 +30,30 @@ context deadline exceeded releted error`)
 	}
 }
 
+func Test_BaseURL(t *testing.T) {
+	t.Log("Given client created with empty baseurl; and setting url and then getting url would return the same value")
+	client := New("")
+	url := "https://google.com"
+	client.SetBaseURL(url)
+	baseUrl := client.BaseURL()
+	if baseUrl != url {
+		t.Fail()
+	}
+}
+
+func Test_HttpClient(t *testing.T) {
+	t.Log("Given client created with empty baseurl and default httpClient; and setting http.Client and then getting http.Client would return the same value")
+	client := New("")
+	httpClient := &http.Client{
+		Timeout: time.Second * 4,
+	}
+	client.SetHttpClient(httpClient)
+	httpClientG := client.HttpClient()
+	if httpClientG.Timeout != time.Duration(time.Second*4) {
+		t.Fail()
+	}
+}
+
 var GetTestCases = []struct {
 	Title          string
 	Path           string

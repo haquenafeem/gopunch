@@ -38,6 +38,34 @@ func NewWithTimeOut(baseUrl string, timeout time.Duration) *Client {
 	}
 }
 
+// BaseURL
+//
+//	returns the base url
+func (c *Client) BaseURL() string {
+	return c.baseUrl
+}
+
+// SetBaseURL
+//
+//	sets the base url
+func (c *Client) SetBaseURL(url string) {
+	c.baseUrl = url
+}
+
+// HttpClient
+//
+//	returns the *http.Client
+func (c *Client) HttpClient() *http.Client {
+	return c.httpClient
+}
+
+// SetHttpClient
+//
+//	sets the *http.Client
+func (c *Client) SetHttpClient(httpClient *http.Client) {
+	c.httpClient = httpClient
+}
+
 // Get
 //
 //	takes context, endpoint and option functions

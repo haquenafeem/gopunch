@@ -47,6 +47,20 @@ func (r *Response) Close() error {
 	return r.httpResponse.Body.Close()
 }
 
+// HttpResponse
+//
+//	returns *http.Response
+func (r *Response) HttpResponse() *http.Response {
+	return r.httpResponse
+}
+
+// Err
+//
+//	returns error
+func (r *Response) Err() error {
+	return r.err
+}
+
 // WithUnmarshal
 //
 //	takes funcfunc(reader io.Reader) error
