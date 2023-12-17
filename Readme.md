@@ -13,10 +13,9 @@
 - Easy To Use
 - Use Own Unmarshal Logic
 - Create With/Without Timer
-- Easy To Use
 - Default JSON Oriented
 - Request/Respose Modification 
-- Examples To Get Your Started
+- Examples To Get You Started
 - All Tests/Examples Based On `JSON Place Holder`
 - Tests Passing
 
