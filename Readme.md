@@ -8,8 +8,12 @@
 
 `gopunch` is a simple golang package to make http calls. 
 
+## Install
+```bash
+go get -u github.com/haquenafeem/gopunch
+```
 
-# Features
+## Features
 - Easy To Use
 - Use Own Unmarshal Logic
 - Create With/Without Timer
