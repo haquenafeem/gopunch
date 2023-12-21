@@ -2,7 +2,7 @@ package main
 
 func main() {
 	// RunJSONPlaceHolder(GetAllWithQueries)
-	// RunAllJSONPlaceHolder()
+	RunAllJSONPlaceHolder()
 	// FileDownload()
-	StringUnmarshal()
+	// StringUnmarshal()
 }

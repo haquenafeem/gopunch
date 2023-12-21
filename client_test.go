@@ -97,7 +97,7 @@ var GetTestCases = []struct {
 }
 
 func Test_Get(t *testing.T) {
-	client := New(BaseURL)
+	client := New(BaseURL + "/")
 	ctx := context.Background()
 	for _, testCase := range GetTestCases {
 		t.Log(testCase.Title)

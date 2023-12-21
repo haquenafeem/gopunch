@@ -56,6 +56,7 @@ func RunJSONPlaceHolder(reqType TypeOFRequest) {
 }
 
 func getAll(ctx context.Context, client *gopunch.Client) {
+	fmt.Println("getAll--->")
 	var todos []Todo
 	opt := gopunch.WithHeaders(map[string]string{
 		"Content-Type": "application/json",
@@ -70,6 +71,7 @@ func getAll(ctx context.Context, client *gopunch.Client) {
 }
 
 func getAllWithQueries(ctx context.Context, client *gopunch.Client) {
+	fmt.Println("getAllWithQueries--->")
 	var todos []Todo
 	opt1 := gopunch.WithHeaders(map[string]string{
 		"Content-Type": "application/json",
@@ -89,6 +91,7 @@ func getAllWithQueries(ctx context.Context, client *gopunch.Client) {
 }
 
 func getSingle(ctx context.Context, client *gopunch.Client) {
+	fmt.Println("getSingle--->")
 	var todo Todo
 
 	opt := gopunch.WithHeaders(map[string]string{
@@ -104,6 +107,7 @@ func getSingle(ctx context.Context, client *gopunch.Client) {
 }
 
 func post(ctx context.Context, client *gopunch.Client) {
+	fmt.Println("post--->")
 	req := &Todo{
 		UserID:    6,
 		Title:     "xxxx",
@@ -129,6 +133,7 @@ func post(ctx context.Context, client *gopunch.Client) {
 }
 
 func delete(ctx context.Context, client *gopunch.Client) {
+	fmt.Println("delete--->")
 	var m map[string]interface{}
 	opt := gopunch.WithHeaders(map[string]string{
 		"Content-Type": "application/json",
@@ -143,6 +148,7 @@ func delete(ctx context.Context, client *gopunch.Client) {
 }
 
 func put(ctx context.Context, client *gopunch.Client) {
+	fmt.Println("put--->")
 	req := &Todo{
 		UserID:    6,
 		Title:     "xxxx",
@@ -168,6 +174,7 @@ func put(ctx context.Context, client *gopunch.Client) {
 }
 
 func patch(ctx context.Context, client *gopunch.Client) {
+	fmt.Println("patch--->")
 	req := struct {
 		Title string `json:"title"`
 	}{

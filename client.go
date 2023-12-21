@@ -38,6 +38,18 @@ func NewWithTimeOut(baseUrl string, timeout time.Duration) *Client {
 	}
 }
 
+func (c *Client) pathFixJoin(base, path string) string {
+	if base[len(base)-1] == '/' {
+		base = base[:len(base)-1]
+	}
+
+	if path[0] == '/' {
+		path = path[1:]
+	}
+
+	return base + "/" + path
+}
+
 // BaseURL
 //
 //	returns the base url
@@ -71,7 +83,7 @@ func (c *Client) SetHttpClient(httpClient *http.Client) {
 //	takes context, endpoint and option functions
 //	returns *Response
 func (c *Client) Get(ctx context.Context, endPoint string, opts ...Option) *Response {
-	completeUrl := c.baseUrl + endPoint
+	completeUrl := c.pathFixJoin(c.baseUrl, endPoint)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, completeUrl, nil)
 	if err != nil {
@@ -101,7 +113,7 @@ func (c *Client) GetUnmarshal(ctx context.Context, endPoint string, dest interfa
 //	takes context, endpoint, payload and option functions
 //	returns *Response
 func (c *Client) Post(ctx context.Context, endPoint string, payload []byte, opts ...Option) *Response {
-	completeUrl := c.baseUrl + endPoint
+	completeUrl := c.pathFixJoin(c.baseUrl, endPoint)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, completeUrl, bytes.NewBuffer(payload))
 	if err != nil {
@@ -131,7 +143,7 @@ func (c *Client) PostUnmarshal(ctx context.Context, endPoint string, payload []b
 //	takes context, endpoint and option functions
 //	returns *Response
 func (c *Client) Delete(ctx context.Context, endPoint string, opts ...Option) *Response {
-	completeUrl := c.baseUrl + endPoint
+	completeUrl := c.pathFixJoin(c.baseUrl, endPoint)
 	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, completeUrl, nil)
 	if err != nil {
 		return NewResponse(nil, err)
@@ -160,7 +172,7 @@ func (c *Client) DeleteUnmarshal(ctx context.Context, endPoint string, dest inte
 //	takes context, endpoint, payload and option functions
 //	returns *Response
 func (c *Client) Put(ctx context.Context, endPoint string, payload []byte, opts ...Option) *Response {
-	completeUrl := c.baseUrl + endPoint
+	completeUrl := c.pathFixJoin(c.baseUrl, endPoint)
 	req, err := http.NewRequestWithContext(ctx, http.MethodPut, completeUrl, bytes.NewBuffer(payload))
 	if err != nil {
 		return NewResponse(nil, err)
@@ -189,7 +201,7 @@ func (c *Client) PutUnmarshal(ctx context.Context, endPoint string, payload []by
 //	takes context, endpoint, payload and option functions
 //	returns *Response
 func (c *Client) Patch(ctx context.Context, endPoint string, payload []byte, opts ...Option) *Response {
-	completeUrl := c.baseUrl + endPoint
+	completeUrl := c.pathFixJoin(c.baseUrl, endPoint)
 	req, err := http.NewRequestWithContext(ctx, http.MethodPatch, completeUrl, bytes.NewBuffer(payload))
 	if err != nil {
 		return NewResponse(nil, err)
@@ -218,7 +230,7 @@ func (c *Client) PatchUnmarshal(ctx context.Context, endPoint string, payload []
 //	takes context, method (GET/POST....), endpoint, payload and option functions
 //	returns *Response
 func (c *Client) Custom(ctx context.Context, method, endPoint string, payload []byte, opts ...Option) *Response {
-	completeUrl := c.baseUrl + endPoint
+	completeUrl := c.pathFixJoin(c.baseUrl, endPoint)
 	req, err := http.NewRequestWithContext(ctx, method, completeUrl, bytes.NewBuffer(payload))
 	if err != nil {
 		return NewResponse(nil, err)
